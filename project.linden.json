@@ -1,0 +1,629 @@
+{
+  "name": "OXen",
+  "version": "0.1.0",
+  "renderer": "webgpu",
+  "tags": [
+    "Player",
+    "Enemy",
+    "Pickup",
+    "Coin",
+    "Ground",
+    "Flying"
+  ],
+  "layers": [
+    "Default",
+    "TransparentFX",
+    "Ignore Raycast",
+    "",
+    "Water",
+    "UI",
+    "Player",
+    "Enemy"
+  ],
+  "collisionMatrix": [
+    [
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true
+    ],
+    [
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true
+    ],
+    [
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true
+    ],
+    [
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true
+    ],
+    [
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true
+    ],
+    [
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true
+    ],
+    [
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true
+    ],
+    [
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true
+    ],
+    [
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true
+    ],
+    [
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true
+    ],
+    [
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true
+    ],
+    [
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true
+    ],
+    [
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true
+    ],
+    [
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true
+    ],
+    [
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true
+    ],
+    [
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true
+    ]
+  ],
+  "input": {
+    "actions": [
+      {
+        "name": "Move",
+        "type": "vector2",
+        "bindings": [
+          "Gamepad/LeftStick",
+          "Touch/Joystick"
+        ],
+        "composites": [
+          {
+            "up": [
+              "Keyboard/KeyW"
+            ],
+            "down": [
+              "Keyboard/KeyS"
+            ],
+            "left": [
+              "Keyboard/KeyA"
+            ],
+            "right": [
+              "Keyboard/KeyD"
+            ]
+          },
+          {
+            "up": [
+              "Keyboard/ArrowUp"
+            ],
+            "down": [
+              "Keyboard/ArrowDown"
+            ],
+            "left": [
+              "Keyboard/ArrowLeft"
+            ],
+            "right": [
+              "Keyboard/ArrowRight"
+            ]
+          }
+        ],
+        "deadzone": 0.15
+      },
+      {
+        "name": "Turn",
+        "type": "axis",
+        "bindings": [],
+        "composites": [
+          {
+            "negative": [
+              "Keyboard/KeyQ",
+              "Gamepad/LeftShoulder",
+              "Touch/Button/TurnLeft"
+            ],
+            "positive": [
+              "Keyboard/KeyE",
+              "Gamepad/RightShoulder",
+              "Touch/Button/TurnRight"
+            ]
+          }
+        ]
+      },
+      {
+        "name": "Vertical",
+        "type": "axis",
+        "bindings": [],
+        "composites": [
+          {
+            "negative": [
+              "Keyboard/KeyQ",
+              "Gamepad/LeftTrigger",
+              "Touch/Button/Down"
+            ],
+            "positive": [
+              "Keyboard/KeyE",
+              "Gamepad/RightTrigger",
+              "Touch/Button/Up"
+            ]
+          }
+        ]
+      },
+      {
+        "name": "Look",
+        "type": "vector2",
+        "bindings": [
+          "Mouse/Delta",
+          "Gamepad/RightStick",
+          "Touch/Look"
+        ],
+        "deadzone": 0.15,
+        "sensitivity": 1
+      },
+      {
+        "name": "Jump",
+        "type": "button",
+        "bindings": [
+          "Keyboard/Space",
+          "Gamepad/ButtonSouth",
+          "Touch/Button/Jump"
+        ]
+      },
+      {
+        "name": "Sprint",
+        "type": "button",
+        "bindings": [
+          "Keyboard/ShiftLeft",
+          "Gamepad/LeftStickPress",
+          "Touch/Button/Sprint",
+          "Touch/Joystick"
+        ],
+        "pressThreshold": 0.9
+      },
+      {
+        "name": "Crouch",
+        "type": "button",
+        "bindings": [
+          "Keyboard/KeyC",
+          "Keyboard/ControlLeft",
+          "Gamepad/ButtonEast",
+          "Touch/Button/Crouch"
+        ]
+      },
+      {
+        "name": "Interact",
+        "type": "button",
+        "bindings": [
+          "Keyboard/KeyF",
+          "Gamepad/ButtonWest",
+          "Touch/Button/Interact"
+        ]
+      },
+      {
+        "name": "Attack",
+        "type": "button",
+        "bindings": [
+          "Mouse/LeftButton",
+          "Gamepad/ButtonNorth",
+          "Gamepad/RightTrigger",
+          "Touch/Button/Attack"
+        ]
+      },
+      {
+        "name": "Warp",
+        "type": "button",
+        "bindings": [
+          "Keyboard/KeyR",
+          "Gamepad/ButtonWest",
+          "Touch/Button/Warp"
+        ]
+      },
+      {
+        "name": "TargetNext",
+        "type": "button",
+        "bindings": [
+          "Keyboard/Tab",
+          "Touch/Button/Next"
+        ]
+      }
+    ],
+    "touch": {
+      "enabled": "auto",
+      "joystick": {
+        "side": "left",
+        "mode": "floating",
+        "radius": 64
+      },
+      "look": {
+        "enabled": true,
+        "area": "right-half",
+        "sensitivity": 1
+      },
+      "buttons": [
+        {
+          "id": "Jump",
+          "label": "THRUST",
+          "icon": "jump",
+          "anchor": "bottom-right",
+          "x": 24,
+          "y": 32,
+          "size": 72
+        },
+        {
+          "id": "Sprint",
+          "label": "BOOST",
+          "icon": "run",
+          "anchor": "bottom-right",
+          "x": 112,
+          "y": 48,
+          "size": 60
+        },
+        {
+          "id": "Interact",
+          "label": "SCAN",
+          "icon": "use",
+          "anchor": "bottom-right",
+          "x": 40,
+          "y": 120,
+          "size": 52
+        },
+        {
+          "id": "Warp",
+          "label": "WARP",
+          "icon": "use",
+          "anchor": "bottom-right",
+          "x": 196,
+          "y": 40,
+          "size": 56
+        },
+        {
+          "id": "TargetNext",
+          "label": "NEXT",
+          "icon": "turn-right",
+          "anchor": "bottom-right",
+          "x": 196,
+          "y": 112,
+          "size": 48
+        },
+        {
+          "id": "TurnLeft",
+          "label": "Q",
+          "icon": "turn-left",
+          "anchor": "bottom-left",
+          "x": 24,
+          "y": 190,
+          "size": 44
+        },
+        {
+          "id": "TurnRight",
+          "label": "E",
+          "icon": "turn-right",
+          "anchor": "bottom-left",
+          "x": 80,
+          "y": 190,
+          "size": 44
+        }
+      ],
+      "opacity": 0.6,
+      "safeArea": true
+    }
+  },
+  "services": [],
+  "scenesInBuild": [
+    "scenes/Main.lscene"
+  ],
+  "exportPresets": [
+    {
+      "id": "preset-windows-desktop",
+      "name": "Windows Desktop",
+      "platform": "windows",
+      "backend": "linden",
+      "arch": [
+        "x64"
+      ],
+      "output": "build/windows/OXen.exe",
+      "mode": "release",
+      "appName": "OXen"
+    },
+    {
+      "id": "preset-macos-desktop",
+      "name": "macOS",
+      "platform": "macos",
+      "backend": "linden",
+      "arch": [
+        "universal"
+      ],
+      "output": "build/mac/OXen.dmg",
+      "mode": "release",
+      "appName": "OXen"
+    },
+    {
+      "id": "preset-linux-desktop",
+      "name": "Linux",
+      "platform": "linux",
+      "backend": "linden",
+      "arch": [
+        "x64"
+      ],
+      "output": "build/linux/OXen.AppImage",
+      "mode": "release",
+      "appName": "OXen"
+    },
+    {
+      "id": "preset-web-html5",
+      "name": "Web",
+      "platform": "web",
+      "backend": "linden",
+      "arch": [
+        "wasm"
+      ],
+      "output": "build/web/index.html",
+      "mode": "release",
+      "appName": "OXen"
+    },
+    {
+      "id": "preset-android",
+      "name": "Android",
+      "platform": "android",
+      "backend": "godot",
+      "arch": [
+        "arm64"
+      ],
+      "output": "build/android/OXen.apk",
+      "mode": "debug",
+      "appName": "OXen"
+    },
+    {
+      "id": "preset-ios",
+      "name": "iOS",
+      "platform": "ios",
+      "backend": "godot",
+      "arch": [
+        "arm64"
+      ],
+      "output": "build/ios/OXen.ipa",
+      "mode": "debug",
+      "appName": "OXen"
+    }
+  ]
+}

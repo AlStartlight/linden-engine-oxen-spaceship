@@ -1,0 +1,7 @@
+# Linden Engine agent workspace & cache
+.linden/
+
+# Build archives
+build/*.zip
+
+.DS_Store

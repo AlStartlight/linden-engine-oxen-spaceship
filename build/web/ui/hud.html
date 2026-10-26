@@ -1,0 +1,405 @@
+<style>
+  #hud, #hud * {
+    box-sizing: border-box;
+    font-family: ui-monospace, "SFMono-Regular", "SF Mono", Menlo, Consolas, "Courier New", monospace;
+  }
+  #hud {
+    --yellow: #fcee0a;
+    --cyan: #00e5ff;
+    --pink: #ff2a6d;
+    --violet: #b967ff;
+    --paper: #d8f6ff;
+    --dim: #6f8fae;
+    position: absolute;
+    inset: 0;
+    overflow: hidden;
+    color: var(--paper);
+    font-size: 11px;
+    letter-spacing: 0.09em;
+    pointer-events: none;
+    text-transform: uppercase;
+    -webkit-font-smoothing: antialiased;
+  }
+  #hud::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: 30;
+    pointer-events: none;
+    background: repeating-linear-gradient(0deg, rgba(255, 255, 255, 0.045) 0 1px, rgba(0, 0, 0, 0) 1px 3px);
+    opacity: 0.55;
+    animation: hud-scan 7s linear infinite;
+  }
+  #hud::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: 29;
+    pointer-events: none;
+    background:
+      radial-gradient(ellipse at 50% 46%, rgba(0, 0, 0, 0) 36%, rgba(2, 0, 8, 0.52) 100%),
+      linear-gradient(90deg, rgba(255, 42, 109, 0.05), rgba(0, 0, 0, 0) 18%, rgba(0, 0, 0, 0) 82%, rgba(0, 229, 255, 0.05));
+  }
+  @keyframes hud-scan { from { background-position: 0 0; } to { background-position: 0 120px; } }
+  @keyframes spin { to { transform: rotate(360deg); } }
+  @keyframes flicker {
+    0%, 96%, 100% { opacity: 1; }
+    97% { opacity: 0.55; }
+    98% { opacity: 1; }
+    99% { opacity: 0.7; }
+  }
+  @keyframes glitch {
+    0%, 92%, 100% { transform: translateX(0); text-shadow: 2px 0 var(--pink), -2px 0 var(--cyan); }
+    93% { transform: translateX(-2px); text-shadow: 3px 0 var(--pink), -3px 0 var(--cyan); }
+    95% { transform: translateX(2px); text-shadow: -3px 0 var(--pink), 3px 0 var(--cyan); }
+    97% { transform: translateX(0); }
+  }
+  @keyframes appear { from { opacity: 0; transform: translateY(-6px); } to { opacity: 1; transform: none; } }
+
+  #hud .panel {
+    position: absolute;
+    z-index: 4;
+    padding: 12px 14px 13px;
+    background-color: rgba(7, 5, 16, 0.78);
+    background-image:
+      linear-gradient(rgba(0, 229, 255, 0.035) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(0, 229, 255, 0.035) 1px, transparent 1px),
+      linear-gradient(145deg, rgba(16, 8, 32, 0.94), rgba(6, 4, 14, 0.74));
+    background-size: 18px 18px, 18px 18px, 100% 100%;
+    border: 1px solid rgba(252, 238, 10, 0.42);
+    clip-path: polygon(0 0, calc(100% - 15px) 0, 100% 15px, 100% 100%, 15px 100%, 0 calc(100% - 15px));
+    box-shadow: 0 14px 38px rgba(0, 0, 0, 0.55), inset 0 0 26px rgba(255, 42, 109, 0.06);
+    backdrop-filter: blur(6px);
+    animation: appear 0.7s ease-out both;
+  }
+  #hud .panel::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 16px;
+    width: 42px;
+    height: 3px;
+    background: var(--yellow);
+    box-shadow: 0 0 12px rgba(252, 238, 10, 0.85);
+  }
+  #hud .panel::after {
+    content: "";
+    position: absolute;
+    right: 0;
+    bottom: 0;
+    width: 34px;
+    height: 3px;
+    background: var(--pink);
+    box-shadow: 0 0 12px rgba(255, 42, 109, 0.8);
+  }
+  #hud .ttl {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    gap: 8px;
+    margin-bottom: 9px;
+    color: var(--yellow);
+    font-size: 9px;
+    letter-spacing: 0.26em;
+  }
+  #hud .ttl b { font-weight: 700; }
+  #hud .ttl span { color: var(--cyan); font-weight: 700; letter-spacing: 0.12em; }
+  #hud .jp {
+    color: rgba(0, 229, 255, 0.7);
+    font-size: 8px;
+    letter-spacing: 0.28em;
+    margin: 5px 0 10px;
+  }
+
+  /* ---------- top strip ---------- */
+  #hud .topstrip {
+    position: absolute;
+    z-index: 6;
+    top: 18px;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 4px 14px;
+    color: rgba(216, 246, 255, 0.75);
+    font-size: 8px;
+    letter-spacing: 0.34em;
+    border-top: 1px solid rgba(0, 229, 255, 0.28);
+    border-bottom: 1px solid rgba(255, 42, 109, 0.28);
+    background: linear-gradient(90deg, rgba(0, 0, 0, 0), rgba(8, 4, 18, 0.7), rgba(0, 0, 0, 0));
+    white-space: nowrap;
+  }
+  #hud .topstrip b { color: var(--pink); font-weight: 700; }
+  #hud .topstrip i { color: var(--yellow); font-style: normal; }
+
+  /* ---------- kiri atas ---------- */
+  #hud .tl { top: 18px; left: 18px; width: 252px; }
+  #hud .brand {
+    font-size: 24px;
+    font-weight: 800;
+    line-height: 1;
+    letter-spacing: 0.1em;
+    color: var(--yellow);
+    animation: glitch 5.5s infinite, flicker 8s infinite;
+  }
+  #hud .brand span { color: var(--pink); margin: 0 2px; }
+  #hud .brand em { font-style: normal; color: var(--paper); font-size: 15px; letter-spacing: 0.18em; }
+  #hud .sub { color: var(--dim); font-size: 8px; letter-spacing: 0.22em; margin: 6px 0 0; }
+  #hud .stat {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    padding: 5px 0;
+    border-top: 1px solid rgba(111, 143, 174, 0.18);
+  }
+  #hud .stat .k { color: var(--dim); font-size: 8px; letter-spacing: 0.18em; }
+  #hud .stat .v { color: var(--paper); font-size: 11px; font-weight: 700; letter-spacing: 0.08em; }
+  #hud .stat .v small { margin-left: 3px; color: var(--dim); font-size: 8px; font-weight: 400; }
+  #hud #hud-speed { color: var(--yellow); font-size: 28px; line-height: 1; letter-spacing: 0.02em; text-shadow: 0 0 18px rgba(252, 238, 10, 0.55), 2px 0 rgba(255, 42, 109, 0.6), -2px 0 rgba(0, 229, 255, 0.6); }
+  #hud #hud-boost { color: var(--pink); }
+  #hud #hud-sector { color: var(--cyan); font-size: 10px; }
+  #hud #hud-scan { color: var(--cyan); }
+  #hud #hud-mode { color: var(--yellow); font-size: 10px; }
+
+  /* ---------- kanan atas: atlas ---------- */
+  #hud .tr { top: 18px; right: 18px; width: 226px; }
+  #hud #hud-atlas { font-size: 13px; color: var(--yellow); text-shadow: 0 0 10px rgba(252, 238, 10, 0.5); }
+  #hud .arow {
+    display: flex;
+    align-items: center;
+    gap: 7px;
+    padding: 2.5px 0;
+    border-bottom: 1px dotted rgba(111, 143, 174, 0.14);
+  }
+  #hud .arow .dot { width: 12px; color: var(--cyan); font-size: 10px; text-align: center; text-shadow: 0 0 8px rgba(0, 229, 255, 0.8); }
+  #hud .arow .an { color: #a8c9dd; font-size: 9px; letter-spacing: 0.08em; }
+  #hud .arow .ao { margin-left: auto; color: #5b7793; font-size: 7px; letter-spacing: 0.12em; }
+
+  /* ---------- kiri bawah: kontrol ---------- */
+  #hud .bl { bottom: 18px; left: 18px; width: 254px; }
+  #hud .key { display: flex; align-items: center; gap: 6px; padding: 2.5px 0; color: #8aa9c4; font-size: 8px; letter-spacing: 0.09em; }
+  #hud .kbd {
+    min-width: 19px;
+    padding: 1px 5px;
+    text-align: center;
+    color: var(--yellow);
+    font-size: 8px;
+    border: 1px solid rgba(252, 238, 10, 0.5);
+    background: rgba(252, 238, 10, 0.08);
+    box-shadow: inset 0 0 8px rgba(252, 238, 10, 0.12);
+  }
+
+  /* ---------- tengah bawah: target ---------- */
+  #hud .targetbox {
+    position: absolute;
+    z-index: 5;
+    left: 50%;
+    bottom: 20px;
+    width: 392px;
+    transform: translateX(-50%);
+    text-align: center;
+    padding: 8px 18px 10px;
+    background: linear-gradient(90deg, rgba(0, 0, 0, 0), rgba(7, 4, 16, 0.82) 18%, rgba(7, 4, 16, 0.82) 82%, rgba(0, 0, 0, 0));
+    border-bottom: 1px solid rgba(0, 229, 255, 0.4);
+  }
+  #hud .targetbox::before, #hud .targetbox::after {
+    content: "";
+    position: absolute;
+    top: 0;
+    width: 52px;
+    height: 1px;
+    background: var(--pink);
+    box-shadow: 0 0 8px rgba(255, 42, 109, 0.8);
+  }
+  #hud .targetbox::before { left: 0; }
+  #hud .targetbox::after { right: 0; }
+  #hud .tlabel { color: var(--dim); font-size: 8px; letter-spacing: 0.34em; }
+  #hud .tline { display: flex; align-items: center; justify-content: center; gap: 12px; margin-top: 2px; }
+  #hud #hud-bearing { color: var(--cyan); font-size: 22px; text-shadow: 0 0 16px rgba(0, 229, 255, 0.8); animation: flicker 6s infinite; }
+  #hud #hud-target { color: var(--paper); font-size: 18px; font-weight: 800; letter-spacing: 0.2em; text-shadow: 2px 0 rgba(255, 42, 109, 0.5), -2px 0 rgba(0, 229, 255, 0.5); }
+  #hud #hud-dist { color: var(--yellow); font-size: 12px; }
+  #hud #hud-hint { margin-top: 6px; color: var(--pink); font-size: 9px; letter-spacing: 0.14em; text-shadow: 0 0 12px rgba(255, 42, 109, 0.4); }
+
+  /* ---------- kanan bawah: data ---------- */
+  #hud .card { bottom: 18px; right: 18px; width: 296px; }
+  #hud .cname { color: var(--yellow); font-size: 19px; font-weight: 800; letter-spacing: 0.12em; }
+  #hud .ckind { margin-top: 3px; color: var(--cyan); font-size: 8px; letter-spacing: 0.18em; }
+  #hud #card-status { margin-top: 5px; color: var(--pink); font-size: 8px; letter-spacing: 0.16em; }
+  #hud .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 4px 10px; margin: 8px 0; }
+  #hud .cell { padding-top: 3px; border-top: 1px solid rgba(111, 143, 174, 0.18); }
+  #hud .cell .ck { color: var(--dim); font-size: 7px; letter-spacing: 0.16em; }
+  #hud .cell .cv { margin-top: 1px; color: #dcefff; font-size: 9.5px; }
+  #hud .fact {
+    padding-left: 8px;
+    border-left: 2px solid var(--pink);
+    color: #9dbdd4;
+    font-size: 9px;
+    line-height: 1.55;
+    letter-spacing: 0.02em;
+    text-transform: none;
+  }
+
+  /* ---------- toast ---------- */
+  #hud .toast {
+    position: absolute;
+    z-index: 8;
+    top: 70px;
+    left: 50%;
+    max-width: 600px;
+    padding: 7px 26px;
+    transform: translateX(-50%);
+    color: var(--yellow);
+    font-size: 10px;
+    letter-spacing: 0.2em;
+    text-align: center;
+    text-shadow: 0 0 18px rgba(252, 238, 10, 0.5);
+    background: linear-gradient(90deg, rgba(0, 0, 0, 0), rgba(255, 42, 109, 0.16) 14%, rgba(255, 42, 109, 0.16) 86%, rgba(0, 0, 0, 0));
+    border-top: 1px solid rgba(255, 42, 109, 0.5);
+    border-bottom: 1px solid rgba(255, 42, 109, 0.5);
+    clip-path: polygon(10px 0, 100% 0, calc(100% - 10px) 100%, 0 100%);
+    animation: flicker 5s infinite;
+  }
+
+  /* ---------- reticle ---------- */
+  #hud .reticle {
+    position: absolute;
+    z-index: 3;
+    left: 50%;
+    top: 50%;
+    width: 122px;
+    height: 122px;
+    margin: -61px 0 0 -61px;
+  }
+  #hud .reticle .ring {
+    position: absolute;
+    inset: 8px;
+    border: 1px solid rgba(0, 229, 255, 0.22);
+    border-top-color: rgba(252, 238, 10, 0.85);
+    border-right-color: rgba(255, 42, 109, 0.55);
+    border-radius: 50%;
+    animation: spin 7s linear infinite;
+  }
+  #hud .reticle .ring2 {
+    position: absolute;
+    inset: 28px;
+    border: 1px dashed rgba(0, 229, 255, 0.45);
+    border-radius: 50%;
+    animation: spin 13s linear infinite reverse;
+  }
+  #hud .reticle .dot {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    width: 4px;
+    height: 4px;
+    margin: -2px 0 0 -2px;
+    border-radius: 50%;
+    background: var(--yellow);
+    box-shadow: 0 0 12px rgba(252, 238, 10, 0.95);
+  }
+  #hud .reticle .cs { position: absolute; width: 12px; height: 12px; border: 1px solid rgba(0, 229, 255, 0.55); }
+  #hud .reticle .cs.tl { left: 0; top: 0; border-right: 0; border-bottom: 0; }
+  #hud .reticle .cs.tr { right: 0; top: 0; border-left: 0; border-bottom: 0; }
+  #hud .reticle .cs.bl { left: 0; bottom: 0; border-right: 0; border-top: 0; }
+  #hud .reticle .cs.br { right: 0; bottom: 0; border-left: 0; border-top: 0; }
+
+  /* ---------- frame sudut ---------- */
+  #hud .fc { position: absolute; z-index: 7; width: 42px; height: 42px; border-color: rgba(252, 238, 10, 0.55); border-style: solid; border-width: 0; }
+  #hud .fc.a { top: 8px; left: 8px; border-top-width: 1px; border-left-width: 1px; }
+  #hud .fc.b { top: 8px; right: 8px; border-top-width: 1px; border-right-width: 1px; }
+  #hud .fc.c { bottom: 8px; left: 8px; border-bottom-width: 1px; border-left-width: 1px; }
+  #hud .fc.d { bottom: 8px; right: 8px; border-bottom-width: 1px; border-right-width: 1px; }
+
+  @media (max-width: 980px) {
+    #hud { font-size: 10px; }
+    #hud .bl { display: none; }
+    #hud .topstrip { font-size: 7px; letter-spacing: 0.2em; }
+    #hud .tl { width: 196px; }
+    #hud .tr { width: 184px; }
+    #hud .card { width: 218px; }
+    #hud .targetbox { width: 274px; bottom: 14px; }
+    #hud .brand { font-size: 19px; }
+    #hud #hud-speed { font-size: 22px; }
+    #hud .toast { max-width: 320px; font-size: 8px; }
+    #hud .reticle { width: 92px; height: 92px; margin: -46px 0 0 -46px; }
+    #hud .reticle .ring2 { inset: 22px; }
+  }
+</style>
+
+<div id="hud">
+  <div class="fc a"></div><div class="fc b"></div><div class="fc c"></div><div class="fc d"></div>
+
+  <div class="topstrip"><span>NEURAL LINK</span><b>●</b><span>OXEN // ORBITAL DIVISION</span><b>●</b><i>SEC 2099</i></div>
+
+  <div class="reticle">
+    <span class="ring"></span>
+    <span class="ring2"></span>
+    <span class="dot"></span>
+    <span class="cs tl"></span><span class="cs tr"></span>
+    <span class="cs bl"></span><span class="cs br"></span>
+  </div>
+
+  <div class="panel tl">
+    <div class="brand">OXEN<span>//</span><em>2099</em></div>
+    <div class="sub">ATLAS TATA SURYA · NEURAL UPLINK</div>
+    <div class="jp">電脳航海 / 軌道管制</div>
+    <div class="stat"><span class="k">KECEPATAN</span><span class="v"><b id="hud-speed">0</b><small>u/s</small></span></div>
+    <div class="stat"><span class="k">MESIN</span><span class="v" id="hud-boost">KRIUS</span></div>
+    <div class="stat"><span class="k">SEKTOR</span><span class="v" id="hud-sector">ZONA TERESTRIAL</span></div>
+    <div class="stat"><span class="k">SENSOR</span><span class="v" id="hud-scan">SIAP</span></div>
+    <div class="stat"><span class="k">STATUS</span><span class="v" id="hud-mode">JELAJAH</span></div>
+  </div>
+
+  <div class="panel tr">
+    <div class="ttl"><b>ATLAS // 2099</b><span id="hud-atlas">0/11</span></div>
+    <div class="arow"><span class="dot" id="st-sun">○</span><span class="an">Matahari</span><span class="ao">BINTANG</span></div>
+    <div class="arow"><span class="dot" id="st-merkurius">○</span><span class="an">Merkurius</span><span class="ao">PLANET</span></div>
+    <div class="arow"><span class="dot" id="st-venus">○</span><span class="an">Venus</span><span class="ao">PLANET</span></div>
+    <div class="arow"><span class="dot" id="st-bumi">○</span><span class="an">Bumi</span><span class="ao">PLANET</span></div>
+    <div class="arow"><span class="dot" id="st-bulan">○</span><span class="an">Bulan</span><span class="ao">SATELIT</span></div>
+    <div class="arow"><span class="dot" id="st-mars">○</span><span class="an">Mars</span><span class="ao">PLANET</span></div>
+    <div class="arow"><span class="dot" id="st-jupiter">○</span><span class="an">Jupiter</span><span class="ao">RAKSASA</span></div>
+    <div class="arow"><span class="dot" id="st-saturnus">○</span><span class="an">Saturnus</span><span class="ao">RAKSASA</span></div>
+    <div class="arow"><span class="dot" id="st-uranus">○</span><span class="an">Uranus</span><span class="ao">RAKSASA</span></div>
+    <div class="arow"><span class="dot" id="st-neptunus">○</span><span class="an">Neptunus</span><span class="ao">RAKSASA</span></div>
+    <div class="arow"><span class="dot" id="st-pluto">○</span><span class="an">Pluto</span><span class="ao">KATAI</span></div>
+  </div>
+
+  <div class="panel bl">
+    <div class="ttl"><b>KENDALI KAPAL</b><span>MANUAL</span></div>
+    <div class="key"><span class="kbd">W</span><span class="kbd">S</span>DORONG / MUNDUR</div>
+    <div class="key"><span class="kbd">A</span><span class="kbd">D</span>BELOK KIRI / KANAN</div>
+    <div class="key"><span class="kbd">Q</span><span class="kbd">E</span>HIDUNG TURUN / NAIK</div>
+    <div class="key"><span class="kbd">MOUSE</span>ARAH BEBAS</div>
+    <div class="key"><span class="kbd">SHIFT</span>BOOST &nbsp;<span class="kbd">C</span>REM</div>
+    <div class="key"><span class="kbd">F</span>PINDAI &nbsp;<span class="kbd">R</span>LOMPAT &nbsp;<span class="kbd">TAB</span>TARGET</div>
+  </div>
+
+  <div class="targetbox">
+    <div class="tlabel">TARGET NAVIGASI // LOCKED</div>
+    <div class="tline">
+      <span id="hud-bearing">↑</span>
+      <span id="hud-target">BUMI</span>
+      <span id="hud-dist">0 u</span>
+    </div>
+    <div id="hud-hint">[R] LOMPAT</div>
+  </div>
+
+  <div class="panel card">
+    <div class="ttl"><b>DATA // RECORD</b><span>LIVE</span></div>
+    <div class="cname" id="card-name">BUMI</div>
+    <div class="ckind" id="card-kind">PLANET TERESTRIAL</div>
+    <div id="card-status">BELUM DIPINDAI</div>
+    <div class="grid">
+      <div class="cell"><div class="ck">DIAMETER</div><div class="cv" id="card-dia">12.742 km</div></div>
+      <div class="cell"><div class="ck">JARAK</div><div class="cv" id="card-dist">149,6 juta km</div></div>
+      <div class="cell"><div class="ck">ROTASI</div><div class="cv" id="card-day">23 jam 56 menit</div></div>
+      <div class="cell"><div class="ck">REVOLUSI</div><div class="cv" id="card-year">365,25 hari</div></div>
+      <div class="cell" style="grid-column: span 2"><div class="ck">SATELIT</div><div class="cv" id="card-moons">1 satelit (Bulan)</div></div>
+    </div>
+    <div class="fact" id="card-fact">Satu-satunya dunia yang diketahui memiliki kehidupan.</div>
+  </div>
+
+  <div class="toast" id="hud-toast"></div>
+</div>

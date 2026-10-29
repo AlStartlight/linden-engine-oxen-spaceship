@@ -62,3 +62,7 @@ Lalu buka `http://localhost:8080` di browser yang mendukung WebGPU (Chrome / Edg
 ## Dibuat dengan Linden Engine
 
 Proyek ini dibangun sepenuhnya dengan **Linden Engine** — game engine Entity-Component-System (ECS) berbasis TypeScript dengan renderer WebGPU/WebGL (Three.js) dan fisika Rapier 3D. Scene, script gameplay, HUD, dan build web semuanya dibuat dan diekspor melalui Linden Engine.
+
+## Kredit
+
+Dibuat dengan **Linden Engine AI Agent** — [Linden Engine](https://lindenengine.com).
